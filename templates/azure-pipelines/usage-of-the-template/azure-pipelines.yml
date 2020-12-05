@@ -24,3 +24,9 @@ stages:
         parameters:
           internal_packages: ["gcp", "aws"]
 
+      - job: parallel_job
+        displayName: job to run in parallel
+        steps:
+          - bash: echo "This text is coming from the job which is running in parallel"
+            displayName: "Parallel job"
+
