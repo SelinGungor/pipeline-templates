@@ -1,0 +1,16 @@
+install_and_deploy:
+  variables:
+    my_favorite_fruit: 'nothing' # default value
+  script:
+    - echo "Install project dependencies"
+    - pip install -U -r requirements.txt
+    - echo "Install test packages"
+    - pip install -U pytest pylint setuptools wheel
+    - echo "Install the Python project"
+    - pip install -U .
+    - echo "Run lint tests"
+    - pylint src
+    - echo "Execute the unit tests"
+    - pytest
+    - echo "Print out the variable"
+    - echo $(my_favorite_fruit)

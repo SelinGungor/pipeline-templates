@@ -1,0 +1,27 @@
+stages:
+    - build
+    - after_build
+
+include:
+  - project: '<my-group>/my-pipeline-templates'
+    ref: 'master'
+    file: 'templates/gitlab-ci/pipeline-template/pipeline.yml'
+
+template:
+  variables:
+
+  script:
+      - echo $my_favorite_fruit
+
+job-build-deploy:
+  extends: .install_and_deploy
+  stage: build
+  variables:
+    my_favorite_fruit: 'pomegranate'
+
+job-after-deployment:
+  stage: after_build
+  script:
+    - echo "Pipeline is completed."
+
+
