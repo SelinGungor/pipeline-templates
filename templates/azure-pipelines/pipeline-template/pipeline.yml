@@ -1,0 +1,43 @@
+parameters:
+  - name: deployment_parameters
+    displayName: "Required deployment parameters"
+    type: Object
+    default: []
+
+jobs:
+  - job: install_and_deploy
+    displayName: Install dependencies, build the model and deploy
+    variables:
+      deployable: $[in(variables['Build.SourceBranch'], 'refs/heads/master', 'refs/heads/develop')]
+
+    steps:
+      - task: UsePythonVersion@0
+        displayName: "Use Python 3.8"
+        inputs:
+          versionSpec: 3.8
+
+      - script: pip install -U -r requirements.txt
+        displayName: Install project dependencies
+
+      - script: pip install -U pytest pylint setuptools wheel
+        displayName: Install test packages
+
+      - script: pip install -U .
+        displayName: Install the Python project
+
+      - script: pylint src
+        displayName: Run lint tests
+        continueOnError: true
+
+      - script: pytest
+        displayName: Execute the unit tests
+        continueOnError: true
+
+      - script: echo $(my_favorite_fruit)
+        displayName: Print out the variable
+
+      - ${{ each param in parameters.deployment_parameters }}:
+          - script: echo "Deploying the model for ${{ param }}"
+            displayName: Deploy the model
+            condition: eq(variables.deployable, true)
+

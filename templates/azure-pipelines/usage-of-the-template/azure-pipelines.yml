@@ -1,0 +1,26 @@
+trigger:
+  branches:
+    include:
+      - master
+      - develop
+
+variables:
+  - name: my_favorite_fruit
+    value: pomegranate
+
+resources:
+  repositories:
+    - repository: my_pipeline_templates
+      type: git
+      name: MyOrganizationName/my-pipeline-templates
+      ref: master
+
+stages:
+  - stage: model_deploy_stage
+    pool:
+      vmImage: 'ubuntu-latest'
+    jobs:
+      - template: pipeline.yml@my_pipeline_templates
+        parameters:
+          internal_packages: ["gcp", "aws"]
+
